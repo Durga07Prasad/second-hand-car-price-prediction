@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: 'Predict', path: '/predict' },
   { label: 'Dashboard', path: '/dashboard' },
   { label: 'Insights', path: '/insights' },
+  { label: 'History', path: '/history' },
   { label: 'About', path: '/about' },
 ];
 

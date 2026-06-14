@@ -139,3 +139,29 @@ def predict_price(car_input: CarInput, loader: ModelLoader) -> float:
         f"{predicted_price:,.0f}",
     )
     return float(predicted_price)
+
+
+def predict_price_range(car_input: CarInput, loader: ModelLoader) -> dict:
+    """
+    Predict price with a confidence range based on the model's RMSE.
+
+    Returns:
+        dict with predicted_price, lower_bound, upper_bound (all rounded
+        to nearest ₹100, lower_bound clamped to 0 minimum).
+    """
+    predicted_price = predict_price(car_input, loader)
+
+    meta = loader.get_metadata()
+    rmse = meta.get("rmse", 0)
+
+    lower_bound = round((predicted_price - rmse) / 100) * 100
+    upper_bound = round((predicted_price + rmse) / 100) * 100
+
+    # Ensure lower bound is never negative
+    lower_bound = max(lower_bound, 0)
+
+    return {
+        "predicted_price": predicted_price,
+        "lower_bound": float(lower_bound),
+        "upper_bound": float(upper_bound),
+    }

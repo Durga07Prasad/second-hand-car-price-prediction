@@ -3,22 +3,43 @@
  */
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Loader2 } from 'lucide-react';
+import { BarChart3, Loader2, Activity, DollarSign, Award, Calendar } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
-import { getFeatureImportance, getModelInfo } from '../services/api';
+import { getFeatureImportance, getModelInfo, getPredictionStats } from '../services/api';
+
+// ─── Indian currency formatter ──────────────────────────────────────
+function formatINR(num) {
+  if (num == null) return '0';
+  const n = Math.round(Math.abs(num));
+  const str = n.toString();
+  if (str.length <= 3) return str;
+  let result = str.slice(-3);
+  let remaining = str.slice(0, -3);
+  while (remaining.length > 0) {
+    result = remaining.slice(-2) + ',' + result;
+    remaining = remaining.slice(0, -2);
+  }
+  return result;
+}
 
 export default function Dashboard() {
   const [features, setFeatures] = useState([]);
   const [modelInfo, setModelInfo] = useState(null);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getFeatureImportance(), getModelInfo()])
-      .then(([fi, mi]) => {
+    Promise.all([
+      getFeatureImportance(), 
+      getModelInfo(),
+      getPredictionStats()
+    ])
+      .then(([fi, mi, st]) => {
         setFeatures(fi);
         setModelInfo(mi);
+        setStats(st);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -52,7 +73,60 @@ export default function Dashboard() {
             <Loader2 className="w-10 h-10 text-primary-600 animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-8">
+            {/* Stats Row */}
+            {stats && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    label: 'Total Predictions',
+                    value: stats.total_predictions || 0,
+                    icon: Activity,
+                    color: 'text-blue-600',
+                    bg: 'bg-blue-50',
+                  },
+                  {
+                    label: 'Avg Predicted Price',
+                    value: `₹${formatINR(stats.avg_predicted_price)}`,
+                    icon: DollarSign,
+                    color: 'text-emerald-600',
+                    bg: 'bg-emerald-50',
+                  },
+                  {
+                    label: 'Most Queried Brand',
+                    value: stats.most_common_brand || 'N/A',
+                    icon: Award,
+                    color: 'text-purple-600',
+                    bg: 'bg-purple-50',
+                  },
+                  {
+                    label: 'Predictions Today',
+                    value: stats.predictions_today || 0,
+                    icon: Calendar,
+                    color: 'text-amber-600',
+                    bg: 'bg-amber-50',
+                  },
+                ].map((s, idx) => (
+                  <motion.div
+                    key={s.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="glass-card rounded-2xl p-6 flex items-center gap-4"
+                  >
+                    <div className={`p-3 rounded-xl ${s.bg}`}>
+                      <s.icon className={`w-6 h-6 ${s.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-gray-800">{s.value}</p>
+                      <p className="text-sm font-medium text-gray-500">{s.label}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Model Metrics */}
             {modelInfo && (
               <motion.div
@@ -121,6 +195,7 @@ export default function Dashboard() {
                 </BarChart>
               </ResponsiveContainer>
             </motion.div>
+            </div>
           </div>
         )}
       </div>

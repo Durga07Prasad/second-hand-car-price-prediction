@@ -398,7 +398,7 @@ export default function Predict() {
                     <p className="text-primary-200 text-sm font-medium mb-1 relative z-10">
                       Estimated Market Value
                     </p>
-                    <div className="text-4xl sm:text-5xl font-extrabold relative z-10 mb-4">
+                    <div className="text-4xl sm:text-5xl font-extrabold relative z-10 mb-2">
                       <AnimatedCounter
                         target={result.predicted_price}
                         prefix="₹"
@@ -406,6 +406,13 @@ export default function Predict() {
                         triggerOnView={false}
                       />
                     </div>
+
+                    {/* Confidence Range */}
+                    {result.lower_bound != null && result.upper_bound != null && (
+                      <p className="text-primary-200/80 text-sm font-medium mb-4 relative z-10">
+                        Expected Range: ₹{formatINR(result.lower_bound)} – ₹{formatINR(result.upper_bound)}
+                      </p>
+                    )}
 
                     <div className="flex items-center gap-3 relative z-10">
                       <span className="inline-flex items-center gap-1 bg-white/20 

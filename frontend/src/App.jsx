@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Predict from './pages/Predict';
 import Dashboard from './pages/Dashboard';
 import Insights from './pages/Insights';
+import History from './pages/History';
 import About from './pages/About';
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/predict" element={<Predict />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/insights" element={<Insights />} />
+            <Route path="/history" element={<History />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </AnimatePresence>

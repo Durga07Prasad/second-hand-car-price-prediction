@@ -108,6 +108,8 @@ class CarInput(BaseModel):
 class PredictionResponse(BaseModel):
     """Response for the /predict endpoint."""
     predicted_price: float = Field(..., description="Predicted selling price in INR")
+    lower_bound: Optional[float] = Field(None, description="Lower confidence bound (price - RMSE)")
+    upper_bound: Optional[float] = Field(None, description="Upper confidence bound (price + RMSE)")
     currency: str = Field(default="INR", description="Currency code")
     model_used: str = Field(..., description="Name of the ML model used")
     model_r2_score: float = Field(..., description="Model R² score on test set")
@@ -123,6 +125,8 @@ class SHAPFactor(BaseModel):
 class ExplanationResponse(BaseModel):
     """Response for the /predict-with-explanation endpoint."""
     predicted_price: float = Field(..., description="Predicted selling price in INR")
+    lower_bound: Optional[float] = Field(None, description="Lower confidence bound (price - RMSE)")
+    upper_bound: Optional[float] = Field(None, description="Upper confidence bound (price + RMSE)")
     currency: str = Field(default="INR", description="Currency code")
     model_used: str = Field(..., description="Name of the ML model used")
     model_r2_score: float = Field(..., description="Model R² score on test set")

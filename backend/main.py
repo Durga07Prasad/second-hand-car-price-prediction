@@ -42,7 +42,7 @@ from schemas import (
     FeedbackResponse,
 )
 from model_loader import ModelLoader
-from predictor import predict_price, preprocess_input
+from predictor import predict_price, predict_price_range, preprocess_input
 from explain import (
     explain_prediction,
     generate_explanation_text,
@@ -201,7 +201,8 @@ def predict(
     predicted price in INR along with model confidence metrics.
     """
     try:
-        price = predict_price(car, loader)
+        price_range = predict_price_range(car, loader)
+        price = price_range["predicted_price"]
         meta = loader.get_metadata()
         
         # Save to DB asynchronously (or within the request since it's fast enough)
@@ -221,6 +222,8 @@ def predict(
             
         return PredictionResponse(
             predicted_price=price,
+            lower_bound=price_range["lower_bound"],
+            upper_bound=price_range["upper_bound"],
             currency="INR",
             model_used=meta["best_model_name"],
             model_r2_score=round(meta["r2"], 4),
@@ -253,6 +256,13 @@ def predict_with_explanation(
         price = round(price / 100) * 100
         price = max(price, 0)
 
+        # Calculate confidence range using RMSE
+        meta = loader.get_metadata()
+        rmse = meta.get("rmse", 0)
+        lower_bound = round((price - rmse) / 100) * 100
+        upper_bound = round((price + rmse) / 100) * 100
+        lower_bound = max(lower_bound, 0)
+
         # SHAP explanation
         explanation = explain_prediction(input_df, loader, top_n=5)
         text = generate_explanation_text(
@@ -261,8 +271,6 @@ def predict_with_explanation(
             explanation["top_factors"],
         )
 
-        meta = loader.get_metadata()
-        
         # Save to DB
         try:
             db_prediction = Prediction(
@@ -280,6 +288,8 @@ def predict_with_explanation(
 
         return ExplanationResponse(
             predicted_price=price,
+            lower_bound=float(lower_bound),
+            upper_bound=float(upper_bound),
             currency="INR",
             model_used=meta["best_model_name"],
             model_r2_score=round(meta["r2"], 4),

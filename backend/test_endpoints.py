@@ -47,8 +47,10 @@ def run_tests():
         r = requests.post(f"{BASE_URL}/predict", json=payload)
         data = r.json()
         price = data.get("predicted_price", 0)
-        passed = r.status_code == 200 and price > 0
-        record("POST /predict", r.status_code, passed, f"Price: {price}")
+        lower = data.get("lower_bound")
+        upper = data.get("upper_bound")
+        passed = r.status_code == 200 and price > 0 and lower is not None and upper is not None
+        record("POST /predict", r.status_code, passed, f"Price: {price}, Range: {lower}-{upper}")
     except Exception as e:
         record("POST /predict", "ERROR", False, str(e))
 
@@ -58,8 +60,10 @@ def run_tests():
         data = r.json()
         factors = data.get("top_factors", [])
         text = data.get("explanation_text", "")
-        passed = r.status_code == 200 and len(factors) == 5 and len(text) > 0
-        record("POST /predict-with-explanation", r.status_code, passed, f"Factors: {len(factors)}")
+        lower = data.get("lower_bound")
+        upper = data.get("upper_bound")
+        passed = r.status_code == 200 and len(factors) == 5 and len(text) > 0 and lower is not None and upper is not None
+        record("POST /predict-with-explanation", r.status_code, passed, f"Factors: {len(factors)}, Range: {lower}-{upper}")
     except Exception as e:
         record("POST /predict-with-explanation", "ERROR", False, str(e))
 

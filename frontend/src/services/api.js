@@ -69,4 +69,24 @@ export async function predictWithExplanation(carData) {
   }
 }
 
+// ─── Prediction History ──────────────────────────────────────────────
+export async function getPredictionHistory(limit = 20) {
+  try {
+    const { data } = await api.get(`/predictions/history?limit=${limit}`);
+    return data;
+  } catch (err) {
+    throw new Error('Failed to fetch prediction history.');
+  }
+}
+
+// ─── Prediction Stats ────────────────────────────────────────────────
+export async function getPredictionStats() {
+  try {
+    const { data } = await api.get('/predictions/stats');
+    return data;
+  } catch (err) {
+    throw new Error('Failed to fetch prediction statistics.');
+  }
+}
+
 export default api;
