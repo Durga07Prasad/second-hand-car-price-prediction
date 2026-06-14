@@ -1,0 +1,22 @@
+# ============================================================
+# Render Blueprint — Backend (FastAPI + Docker)
+# ============================================================
+# Deploy: Connect GitHub repo -> Render auto-detects this file
+# ============================================================
+
+services:
+  - type: web
+    name: car-price-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # ── Database URL ─────────────────────────────────────────
+      # Default: SQLite (resets on redeploy, fine for demo)
+      # Recommended: Add Render's free PostgreSQL addon and set
+      #   DATABASE_URL = <connection string from Render dashboard>
+      # The backend auto-switches — no code changes needed.
+      - key: DATABASE_URL
+        value: sqlite:////app/data/car_predictions.db

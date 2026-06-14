@@ -1,0 +1,26 @@
+# ============================================================
+# Render Blueprint — Frontend (Static Site)
+# ============================================================
+# NOTE: If deploying as a Render STATIC SITE (not Docker),
+# just set VITE_API_URL in Render's Environment Variables panel.
+# Render's native static site builder runs "npm run build" in
+# a Node environment, so Vite picks up VITE_API_URL automatically
+# during the build — no Docker ARG needed.
+#
+# The Dockerfile path is only needed if you choose Docker deploy.
+# ============================================================
+
+services:
+  - type: web
+    name: car-price-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      # ── Backend API URL ──────────────────────────────────────
+      # Set this to the LIVE backend URL after deploying backend.
+      # Example: https://car-price-api.onrender.com
+      # This is a BUILD-TIME variable — Vite inlines it into the
+      # JS bundle during "npm run build".
+      - key: VITE_API_URL
+        value: https://car-price-api.onrender.com

@@ -1,0 +1,31 @@
+{
+  "best_model_name": "CatBoost",
+  "rmse": 184804.9470423606,
+  "mae": 124337.22600240841,
+  "r2": 0.7987111697427455,
+  "cv_r2_mean": 0.7891554636311099,
+  "cv_r2_std": 0.025304736282928977,
+  "feature_columns": [
+    "km_driven",
+    "brand",
+    "car_age",
+    "km_per_year",
+    "fuel_Diesel",
+    "fuel_Electric",
+    "fuel_LPG",
+    "fuel_Petrol",
+    "seller_type_Individual",
+    "seller_type_Trustmark Dealer",
+    "transmission_Manual",
+    "owner_Fourth & Above Owner",
+    "owner_Second Owner",
+    "owner_Test Drive Car",
+    "owner_Third Owner",
+    "brand_tier_Luxury",
+    "brand_tier_Mid-range",
+    "brand_tier_Premium"
+  ],
+  "training_date": "2026-06-14T08:50:18.864892",
+  "training_samples": 2861,
+  "test_samples": 716
+}

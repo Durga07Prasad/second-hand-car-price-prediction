@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+
+node_modules/
+dist/
+
+.env
+.env.*
+
+car_predictions.db
+*.db
+
+logs/
+*.log
+
+.ipynb_checkpoints/

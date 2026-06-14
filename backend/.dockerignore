@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+*.pyo
+.venv
+.env
+logs/*.log
+.git
+.gitignore
+.pytest_cache
+car_predictions.db
+*.db
+test_endpoints.py
+README.md

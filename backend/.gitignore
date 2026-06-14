@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+logs/*.log
+.git/
+.pytest_cache/
+car_predictions.db
+*.db

@@ -1,0 +1,20 @@
+{
+  "km_driven": "Kilometers Driven",
+  "brand": "Car Brand",
+  "car_age": "Vehicle Age",
+  "km_per_year": "Yearly Usage (km/year)",
+  "fuel_Diesel": "Diesel Fuel",
+  "fuel_Electric": "Electric Vehicle",
+  "fuel_LPG": "LPG Fuel",
+  "fuel_Petrol": "Petrol Fuel",
+  "seller_type_Individual": "Individual Seller",
+  "seller_type_Trustmark Dealer": "Trustmark Dealer",
+  "transmission_Manual": "Manual Transmission",
+  "owner_Fourth & Above Owner": "Fourth+ Owner",
+  "owner_Second Owner": "Second Owner",
+  "owner_Test Drive Car": "Test Drive Car",
+  "owner_Third Owner": "Third Owner",
+  "brand_tier_Luxury": "Luxury Brand",
+  "brand_tier_Mid-range": "Mid-Range Brand",
+  "brand_tier_Premium": "Premium Brand"
+}

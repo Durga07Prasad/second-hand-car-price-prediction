@@ -1,0 +1,45 @@
+# ============================================================
+# CarValueAI — Docker Compose (Local Development)
+# ============================================================
+# Usage:
+#   docker-compose up --build
+#
+# Backend:  http://localhost:8000       (API + Swagger at /docs)
+# Frontend: http://localhost:5173       (React app)
+# ============================================================
+
+services:
+  # ── FastAPI Backend ──────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:////app/data/car_predictions.db
+    volumes:
+      # Persist SQLite database across container restarts
+      - ./backend/data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ── React Frontend (Nginx) ──────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # This is baked into the JS bundle at build time.
+        # The browser on the HOST machine needs to reach the backend,
+        # so this points to localhost:8000 (the exposed port), NOT
+        # the Docker internal service name.
+        VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
